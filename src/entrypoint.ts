@@ -1,7 +1,7 @@
 import { Client, Intents, Permissions } from 'discord.js'
-import { DISCORD_TOKEN } from './environment.js'
+import { DISCORD_TOKEN, TTS_CHANNELS } from './environment.js'
 import { playInChannel } from './play-in-channel.js'
-import { listVoices, synthesizeSpeech } from './synthesize-speech.js'
+import { synthesizeSpeech } from './synthesize-speech.js'
 import { getUserSettings, setUserSettings } from './user-settings.js'
 
 const client = new Client({
@@ -19,6 +19,7 @@ client.on('ready', () => {
 
 client.on('messageCreate', async message => {
   if (message.author.bot) return
+  if (!TTS_CHANNELS!.includes(message.channel.id)) return
 
   const channel = message.member?.voice.channel
   if (!channel) return
