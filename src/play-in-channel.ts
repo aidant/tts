@@ -1,4 +1,4 @@
-import { AudioPlayer, AudioPlayerStatus, AudioResource, createAudioPlayer, createAudioResource, entersState, joinVoiceChannel, StreamType, VoiceConnection, VoiceConnectionStatus } from '@discordjs/voice'
+import { AudioPlayer, createAudioPlayer, entersState, joinVoiceChannel, VoiceConnection, VoiceConnectionStatus } from '@discordjs/voice'
 import type { StageChannel, VoiceChannel } from 'discord.js'
 import type { Readable } from 'stream'
 import { namespace } from './log.js'
@@ -27,21 +27,25 @@ const getVoiceConnection = async (channel: VoiceChannel | StageChannel): Promise
     throw error
   }
 
-  connection.on(VoiceConnectionStatus.Disconnected, async () => {
-    log('disconnected')
-    try {
-      await Promise.race([
-        entersState(connection, VoiceConnectionStatus.Signalling, 5000),
-        entersState(connection, VoiceConnectionStatus.Connecting, 5000),
-      ])
-      log('reconnected')
-    } catch (error) {
+  if (!connection.__RECONNECTION_HANDLER_REGISTERED__) {
+    connection.__RECONNECTION_HANDLER_REGISTERED__ = true
+    connection.on(VoiceConnectionStatus.Disconnected, async () => {
+      log('disconnected')
       try {
-        log('closing connection')
-        connection.destroy()
-      } catch {}
-    }
-  })
+        await Promise.race([
+          entersState(connection, VoiceConnectionStatus.Signalling, 5000),
+          entersState(connection, VoiceConnectionStatus.Connecting, 5000),
+        ])
+        log('reconnected')
+      } catch (error) {
+        try {
+          log('closing connection')
+          connection.destroy()
+        } catch {}
+      }
+    })
+  }
+
 
   return connection
 }
