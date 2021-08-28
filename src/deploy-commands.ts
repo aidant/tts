@@ -17,7 +17,6 @@ export const deployCommands = async () => {
         .setRequired(true)
         .addChoices(
           voices
-          // @ts-ignore
           .sort((a, b) => (a.Name > b.Name) ? 1 : -1)
             .map(voice => [`${voice.Name} - ${voice.LanguageName}`, voice.Name] as [string, string])
         )
