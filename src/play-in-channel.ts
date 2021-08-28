@@ -18,7 +18,9 @@ export const playInChannel = async (channel: VoiceChannel | StageChannel, stream
   try {
     await entersState(connection, VoiceConnectionStatus.Ready, 30000)
   } catch (error) {
-    connection.destroy()
+    try {
+      connection.destroy()
+    } catch {}
     throw error
   }
 
@@ -29,7 +31,9 @@ export const playInChannel = async (channel: VoiceChannel | StageChannel, stream
         entersState(connection, VoiceConnectionStatus.Connecting, 5000),
       ])
     } catch (error) {
-      connection.destroy()
+      try {
+        connection.destroy()
+      } catch {}
     }
   })
 
