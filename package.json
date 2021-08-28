@@ -1,0 +1,27 @@
+{
+  "type": "module",
+  "scripts": {
+    "start": "concurrently --kill-others-on-fail npm:start:typescript npm:start:nodemon",
+    "start:typescript": "tsc --watch",
+    "start:nodemon": "nodemon --watch lib lib/entrypoint.js",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@aws-sdk/client-polly": "^3.28.0",
+    "@discordjs/builders": "^0.5.0",
+    "@discordjs/opus": "^0.5.3",
+    "@discordjs/rest": "^0.1.0-canary.0",
+    "@discordjs/voice": "^0.6.0",
+    "discord-api-types": "^0.22.0",
+    "discord.js": "^13.1.0",
+    "dotenv": "^10.0.0",
+    "ffmpeg-static": "^4.4.0",
+    "tweetnacl": "^1.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^16.7.4",
+    "concurrently": "^6.2.1",
+    "nodemon": "^2.0.12",
+    "typescript": "^4.4.2"
+  }
+}
