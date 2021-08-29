@@ -1,5 +1,5 @@
 import 'source-map-support/register.js'
-import { Client, Intents, Permissions } from 'discord.js'
+import { Client, Intents, MessageEmbed, Permissions } from 'discord.js'
 import { DISCORD_TOKEN, TTS_CHANNELS } from './environment.js'
 import { playInChannel } from './play-in-channel.js'
 import { synthesizeSpeech } from './synthesize-speech.js'
@@ -47,7 +47,7 @@ client.on('interactionCreate', async interaction => {
   if (interaction.commandName === 'voice') {
     const voice = interaction.options.getString('name', true)
     await setUserSettings(interaction.user.id, 'voice', voice)
-    interaction.reply(`${voice} online!`)
+    interaction.reply({ content: `${voice} online!`, ephemeral: true })
   }
 })
 

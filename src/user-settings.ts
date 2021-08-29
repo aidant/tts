@@ -13,7 +13,6 @@ interface Settings {
 }
 
 export const getUserSettings = async (userId: string): Promise<Settings> => {
-  
   const settings = JSON.parse(await fs.readFile(getFilepath(userId), { encoding: 'utf8' }).catch(() => '{}'))
   log('get user settings for user: %s\n%O', userId, settings)
   return settings
