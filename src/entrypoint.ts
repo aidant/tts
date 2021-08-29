@@ -1,7 +1,7 @@
 import 'source-map-support/register.js'
-import { Client, Intents, MessageEmbed, Permissions } from 'discord.js'
+import { Client, Intents, Permissions } from 'discord.js'
 import { DISCORD_TOKEN, TTS_CHANNELS } from './environment.js'
-import { playInChannel } from './play-in-channel.js'
+import { playInChannel } from './discord/play-in-channel.js'
 import { synthesizeSpeech } from './synthesize-speech.js'
 import { getUserSettings, setUserSettings } from './user-settings.js'
 import { namespace } from './log.js'
@@ -24,8 +24,9 @@ client.on('ready', () => {
 client.on('messageCreate', async message => {
   if (message.author.bot) return
   if (!TTS_CHANNELS!.includes(message.channel.id)) return
+  if (!message.content)
 
-  log('message content:', message.content)
+  log('message content: "%s"', message.content)
 
   const channel = message.member?.voice.channel
   if (!channel) return
