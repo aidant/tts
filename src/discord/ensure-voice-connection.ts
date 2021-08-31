@@ -60,7 +60,9 @@ export const ensureVoiceConnection = async (
     } catch (error) {
       log('failed to establish connection:\n\t%O', error)
 
-      connection.destroy()
+      try {
+        connection.destroy()
+      } catch {}
       throw error
     }
 
@@ -86,7 +88,10 @@ export const ensureVoiceConnection = async (
         log('destroying connection')
 
         connection!.off(VoiceConnectionStatus.Disconnected, handleDisconnect)
-        connection!.destroy()
+
+        try {
+          connection!.destroy()
+        } catch {}
       }
     }
     connection.on(VoiceConnectionStatus.Disconnected, handleDisconnect)

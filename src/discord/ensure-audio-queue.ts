@@ -72,7 +72,9 @@ export const ensureAudioQueue = (connection: VoiceConnection, player: AudioPlaye
 
           player.off(AudioPlayerStatus.Idle, handlePlayerIdle)
           connection.off(VoiceConnectionStatus.Destroyed, handleConnectionDestroyed)
-          connection.destroy()
+          try {
+            connection.destroy()
+          } catch {}
           queues.delete(player)
         }, 1000 * 60 * 10)
       }
