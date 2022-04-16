@@ -27,7 +27,11 @@ export const listVoices = async () => {
   return response.Voices || []
 }
 
-export const createSSML = async (text: string, guild: Guild): Promise<string> => {
+export const createSSML = async (
+  text: string,
+  guild: Guild,
+  { isEmphasisAvailable = false } = {}
+): Promise<string> => {
   let parsedText = text
     .replace(/"/g, '&quot;')
     .replace(/&/g, '&amp;')
@@ -84,7 +88,28 @@ export const createSSML = async (text: string, guild: Guild): Promise<string> =>
     }
   }
 
-  return `<speak>${parsedText}</speak>`
+  if (isEmphasisAvailable) {
+    while (true) {
+      const match = /__(?<underline>.+?)__|\*\*(?<bold>.+?)\*\*/.exec(parsedText)
+
+      if (match?.groups) {
+        const { underline, bold } = match.groups
+
+        if (underline) {
+          parsedText = parsedText.replace(
+            match[0],
+            `<emphasis level="reduced">${underline}</emphasis>`
+          )
+        } else if (bold) {
+          parsedText = parsedText.replace(match[0], `<emphasis level="strong">${bold}</emphasis>`)
+        }
+      } else {
+        break
+      }
+    }
+  }
+
+  return `<speak><amazon:effect name="drc">${parsedText}</amazon:effect></speak>`
 }
 
 export const synthesizeSpeech = async (ssml: string, name = 'Brian') => {
