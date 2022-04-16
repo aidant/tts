@@ -11,35 +11,35 @@ export const deployCommands = async () => {
     new SlashCommandBuilder()
       .setName('voice')
       .setDescription('Choose a voice of your own!')
-      .addStringOption(option => option
-        .setName('name')
-        .setDescription('The name of the voice.')
-        .setRequired(true)
-        .addChoices(
-          voices
-          .sort((a, b) => (a.Name > b.Name) ? 1 : -1)
-            .map(voice => [`${voice.Name} - ${voice.LanguageName}`, voice.Name] as [string, string])
-        )
-      )
-  ].map(command => command.toJSON())
+      .addStringOption((option) =>
+        option
+          .setName('name')
+          .setDescription('The name of the voice.')
+          .setRequired(true)
+          .addChoices(
+            voices
+              .sort((a, b) => (a.Name! > b.Name! ? 1 : -1))
+              .map(
+                (voice) => [`${voice.Name} - ${voice.LanguageName}`, voice.Name] as [string, string]
+              )
+          )
+      ),
+  ].map((command) => command.toJSON())
 
   const rest = new REST({ version: '9' }).setToken(DISCORD_TOKEN)
 
-  const applicationId = await rest.get(
-    Routes.oauth2CurrentApplication()
-  ).then((response: any) => response.id)
+  const applicationId = await rest
+    .get(Routes.oauth2CurrentApplication())
+    .then((response: any) => response.id)
 
   // console.dir(commands, { depth: null })
 
-  return rest.put(
-    Routes.applicationCommands(applicationId),
-    { body: commands },
-  )
+  return rest.put(Routes.applicationCommands(applicationId), { body: commands })
 }
 
 deployCommands()
-  .then(response => console.dir(response, { depth: null }))
-  .catch(error => {
+  .then((response) => console.dir(response, { depth: null }))
+  .catch((error) => {
     console.error(error)
     process.exit(1)
   })

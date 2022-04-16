@@ -1,10 +1,12 @@
 import {
   AudioPlayer,
+  AudioPlayerStatus,
   AudioResource,
+  createAudioResource,
+  StreamType,
   VoiceConnection,
   VoiceConnectionStatus,
 } from '@discordjs/voice'
-import { AudioPlayerStatus, createAudioResource, StreamType } from '@discordjs/voice'
 import type { Readable } from 'stream'
 import { namespace } from '../log.js'
 

@@ -1,4 +1,12 @@
-import { Engine, OutputFormat, PollyClient, SynthesizeSpeechCommand, TextType, VoiceId, DescribeVoicesCommand } from '@aws-sdk/client-polly'
+import {
+  DescribeVoicesCommand,
+  Engine,
+  OutputFormat,
+  PollyClient,
+  SynthesizeSpeechCommand,
+  TextType,
+} from '@aws-sdk/client-polly'
+import { Guild } from 'discord.js'
 import type { Readable } from 'stream'
 import { AWS_REGION } from './environment.js'
 import { namespace } from './log.js'
@@ -10,23 +18,87 @@ const client = new PollyClient({
 })
 
 export const listVoices = async () => {
-  const response = await client.send(new DescribeVoicesCommand({
-    Engine: Engine.NEURAL
-  }))
+  const response = await client.send(
+    new DescribeVoicesCommand({
+      Engine: Engine.NEURAL,
+    })
+  )
 
   return response.Voices || []
 }
 
-export const synthesizeSpeech = async (text: string, name = 'Brian') => {
-  log('synthesize speech for %s:\n\t%O', name, text)
+export const createSSML = async (text: string, guild: Guild): Promise<string> => {
+  let parsedText = text
+    .replace(/"/g, '&quot;')
+    .replace(/&/g, '&amp;')
+    .replace(/'/g, '&apos;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
 
-  const response = await client.send(new SynthesizeSpeechCommand({
-    OutputFormat: OutputFormat.OGG_VORBIS,
-    Text: text,
-    TextType: TextType.TEXT,
-    VoiceId: name,
-    Engine: Engine.NEURAL,
-  }))
+  while (true) {
+    const match =
+      /&lt;(?:(?:@!?(?<user>\d+?))|(?:#(?<channel>\d+?))|(?:@&amp;(?<role>\d+?))|(?:a?:(?<custom_emoji>\S+?):\d+?)|(?:t:(?<timestamp>\d+?)(?::\w)?))&gt;/.exec(
+        parsedText
+      )
+
+    if (match?.groups) {
+      const { user, channel, role, custom_emoji, timestamp } = match.groups
+
+      if (user) {
+        const discordUser = await guild.members.fetch(user)
+        const discordUserName = discordUser?.displayName
+        if (discordUserName) {
+          parsedText = parsedText.replace(match[0], discordUserName)
+        } else {
+          parsedText = parsedText.replace(match[0], 'Unknown User')
+        }
+      } else if (channel) {
+        const discordChanel = await guild.channels.fetch(channel)
+        const discordChannelName = discordChanel?.name
+        if (discordChannelName) {
+          parsedText = parsedText.replace(match[0], discordChannelName)
+        } else {
+          parsedText = parsedText.replace(match[0], 'deleted channel')
+        }
+      } else if (role) {
+        const discordRole = await guild.roles.fetch(role)
+        const discordRoleName = discordRole?.name
+        if (discordRoleName) {
+          parsedText = parsedText.replace(match[0], discordRoleName)
+        } else {
+          parsedText = parsedText.replace(match[0], 'deleted role')
+        }
+      } else if (custom_emoji) {
+        parsedText = parsedText.replace(match[0], custom_emoji)
+      } else if (timestamp) {
+        parsedText = parsedText.replace(
+          match[0],
+          `<say-as interpret-as="date" format="yyyymmdd">${new Date(parseInt(timestamp, 10) * 1000)
+            .toISOString()
+            .slice(0, 10)
+            .replace(/-/g, '')}</say-as>`
+        )
+      }
+    } else {
+      break
+    }
+  }
+
+  return `<speak>${parsedText}</speak>`
+}
+
+export const synthesizeSpeech = async (ssml: string, name = 'Brian') => {
+  log('synthesize speech for %s:\n\t%O', name, ssml)
+
+  const response = await client.send(
+    new SynthesizeSpeechCommand({
+      OutputFormat: OutputFormat.OGG_VORBIS,
+      Text: ssml,
+      TextType: TextType.SSML,
+      VoiceId: name,
+      Engine: Engine.NEURAL,
+    })
+  )
 
   log('synthesized')
 

@@ -17,11 +17,13 @@ const players = new WeakMap<VoiceConnection, AudioPlayer>()
 export const ensureAudioPlayer = (connection: VoiceConnection): AudioPlayer => {
   log('begin creating audio player')
 
-  const player = players.get(connection) || createAudioPlayer({
-    behaviors: {
-      noSubscriber: NoSubscriberBehavior.Stop,
-    },
-  })
+  const player =
+    players.get(connection) ||
+    createAudioPlayer({
+      behaviors: {
+        noSubscriber: NoSubscriberBehavior.Stop,
+      },
+    })
   const isNewPlayer = !players.has(connection)
 
   log('existing audio player: %s', isNewPlayer ? 'no' : 'yes')
