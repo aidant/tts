@@ -33,6 +33,8 @@ client.on('messageCreate', async (message) => {
   const channel = message.member?.voice.channel
   if (!channel) return
 
+  log('message from user: "%s"', message.member.displayName)
+
   try {
     const settings = await getUserSettings(message.member!.id)
     const stream = await synthesizeSpeech(
