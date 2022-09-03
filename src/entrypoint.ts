@@ -1,4 +1,4 @@
-import { Client, Intents, Permissions } from 'discord.js'
+import { Client, GatewayIntentBits, OAuth2Scopes, PermissionFlagsBits } from 'discord.js'
 import 'source-map-support/register.js'
 import { playInChannel } from './discord/play-in-channel.js'
 import { DISCORD_TOKEN, TTS_CHANNELS } from './environment.js'
@@ -9,16 +9,21 @@ import { getUserSettings, setUserSettings } from './user-settings.js'
 const log = namespace('discord')
 
 const client = new Client({
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.MessageContent,
+  ],
 })
 
 client.on('ready', () => {
   const invite = client.generateInvite({
-    scopes: ['bot', 'applications.commands'],
+    scopes: [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands],
     permissions: [
-      Permissions.FLAGS.CONNECT,
-      Permissions.FLAGS.SPEAK,
-      Permissions.FLAGS.USE_APPLICATION_COMMANDS,
+      PermissionFlagsBits.Connect,
+      PermissionFlagsBits.Speak,
+      PermissionFlagsBits.UseApplicationCommands,
     ],
   })
 
@@ -48,7 +53,7 @@ client.on('messageCreate', async (message) => {
 })
 
 client.on('interactionCreate', async (interaction) => {
-  if (!interaction.isCommand()) return
+  if (!interaction.isChatInputCommand()) return
 
   log('slash command activated', interaction.commandName)
 

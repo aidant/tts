@@ -17,11 +17,12 @@ export const deployCommands = async () => {
           .setDescription('The name of the voice.')
           .setRequired(true)
           .addChoices(
-            voices
+            ...voices
               .sort((a, b) => (a.Name! > b.Name! ? 1 : -1))
-              .map(
-                (voice) => [`${voice.Name} - ${voice.LanguageName}`, voice.Name] as [string, string]
-              )
+              .map((voice) => ({
+                name: `${voice.Name} - ${voice.LanguageName}`,
+                value: voice.Name as string,
+              }))
           )
       ),
   ].map((command) => command.toJSON())
