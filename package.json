@@ -17,6 +17,7 @@
     "discord.js": "^14.3.0",
     "dotenv": "^16.0.2",
     "ffmpeg-static": "^5.1.0",
+    "random-words": "^1.2.0",
     "source-map-support": "^0.5.21",
     "tweetnacl": "^1.0.3"
   },
