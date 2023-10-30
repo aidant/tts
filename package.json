@@ -2,30 +2,29 @@
   "type": "module",
   "scripts": {
     "start": "concurrently --kill-others-on-fail npm:start:typescript npm:start:nodemon",
-    "start:typescript": "tsc --watch",
-    "start:nodemon": "nodemon --watch lib lib/entrypoint.js",
+    "start:typescript": "tsc --watch --preserveWatchOutput",
+    "start:nodemon": "nodemon --watch lib -- --enable-source-maps lib/entrypoint.js",
     "build": "tsc"
   },
   "dependencies": {
-    "@aws-sdk/client-polly": "^3.163.0",
-    "@discordjs/builders": "^1.2.0",
-    "@discordjs/opus": "^0.8.0",
-    "@discordjs/rest": "^1.1.0",
-    "@discordjs/voice": "^0.11.0",
+    "@aws-sdk/client-polly": "^3.438.0",
+    "@discordjs/builders": "^1.6.5",
+    "@discordjs/opus": "^0.9.0",
+    "@discordjs/rest": "^2.0.1",
+    "@discordjs/voice": "^0.16.0",
     "debug": "^4.3.4",
-    "discord-api-types": "^0.37.5",
-    "discord.js": "^14.3.0",
-    "dotenv": "^16.0.2",
-    "ffmpeg-static": "^5.1.0",
-    "random-words": "^1.2.0",
+    "discord-api-types": "^0.37.61",
+    "discord.js": "^14.13.0",
+    "dotenv": "^16.3.1",
+    "ffmpeg-static": "^5.2.0",
     "source-map-support": "^0.5.21",
     "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
-    "@types/debug": "^4.1.7",
-    "@types/node": "^18.7.14",
-    "concurrently": "^7.3.0",
-    "nodemon": "^2.0.19",
-    "typescript": "^4.8.2"
+    "@types/debug": "^4.1.10",
+    "@types/node": "^20.8.9",
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.1",
+    "typescript": "^5.2.2"
   }
 }

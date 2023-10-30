@@ -1,3 +1,4 @@
+import { VoiceId } from '@aws-sdk/client-polly'
 import { promises as fs } from 'fs'
 import os from 'os'
 import path from 'path'
@@ -9,7 +10,7 @@ const getFilepath = (userId: string) =>
   path.resolve(path.join(os.homedir(), '.tts'), 'users', userId)
 
 interface Settings {
-  voice?: string
+  voice?: VoiceId
 }
 
 export const getUserSettings = async (userId: string): Promise<Settings> => {

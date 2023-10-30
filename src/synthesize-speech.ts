@@ -5,6 +5,7 @@ import {
   PollyClient,
   SynthesizeSpeechCommand,
   TextType,
+  VoiceId,
 } from '@aws-sdk/client-polly'
 import { Guild } from 'discord.js'
 import type { Readable } from 'stream'
@@ -112,7 +113,7 @@ export const createSSML = async (
   return `<speak><amazon:effect name="drc">${parsedText}</amazon:effect></speak>`
 }
 
-export const synthesizeSpeech = async (ssml: string, name = 'Brian') => {
+export const synthesizeSpeech = async (ssml: string, name: VoiceId = 'Brian') => {
   log('synthesize speech for %s:\n\t%O', name, ssml)
 
   const response = await client.send(

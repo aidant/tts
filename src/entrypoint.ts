@@ -1,9 +1,9 @@
+import { VoiceId } from '@aws-sdk/client-polly'
 import { Client, GatewayIntentBits, OAuth2Scopes, PermissionFlagsBits } from 'discord.js'
 import 'source-map-support/register.js'
 import { playInChannel } from './discord/play-in-channel.js'
 import { DISCORD_TOKEN, TTS_CHANNELS } from './environment.js'
 import { namespace } from './log.js'
-import { messWithUsers } from './mess-with-users.js'
 import { createSSML, synthesizeSpeech } from './synthesize-speech.js'
 import { getUserSettings, setUserSettings } from './user-settings.js'
 
@@ -44,7 +44,7 @@ client.on('messageCreate', async (message) => {
   try {
     const settings = await getUserSettings(message.member!.id)
     const stream = await synthesizeSpeech(
-      await createSSML(messWithUsers(message.member!.id, message.content), message.guild!),
+      await createSSML(message.content, message.guild!),
       settings.voice
     )
     await playInChannel(channel, stream)
@@ -59,7 +59,7 @@ client.on('interactionCreate', async (interaction) => {
   log('slash command activated', interaction.commandName)
 
   if (interaction.commandName === 'voice') {
-    const voice = interaction.options.getString('name', true)
+    const voice = interaction.options.getString('name', true) as VoiceId
     await setUserSettings(interaction.user.id, 'voice', voice)
     interaction.reply({ content: `${voice} online!`, ephemeral: true })
   }
