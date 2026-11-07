@@ -1,8 +1,8 @@
-import { VoiceId } from '@aws-sdk/client-polly'
+import type { VoiceId } from '@aws-sdk/client-polly'
 import { promises as fs } from 'fs'
 import os from 'os'
 import path from 'path'
-import { namespace } from './log.js'
+import { namespace } from './log.ts'
 
 const log = namespace('user-settings')
 

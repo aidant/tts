@@ -1,14 +1,14 @@
 import {
-  AudioPlayer,
+  type AudioPlayer,
   AudioPlayerStatus,
-  AudioResource,
+  type AudioResource,
   createAudioResource,
   StreamType,
-  VoiceConnection,
+  type VoiceConnection,
   VoiceConnectionStatus,
 } from '@discordjs/voice'
 import type { Readable } from 'stream'
-import { namespace } from '../log.js'
+import { namespace } from '../log.ts'
 
 const log = namespace('discord:audio-queue')
 /*

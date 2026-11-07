@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "erasableSyntaxOnly": true,
     "lib": ["ES2021"],
-    "module": "ESNext",
-    "moduleResolution": "Node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "outDir": "lib",
     "rootDir": "src",
+    "rewriteRelativeImportExtensions": true,
     "sourceMap": true,
     "strict": true,
-    "target": "ES2021"
+    "target": "ES2021",
+    "verbatimModuleSyntax": true
   }
 }

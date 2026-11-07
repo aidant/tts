@@ -5,12 +5,12 @@ import {
   PollyClient,
   SynthesizeSpeechCommand,
   TextType,
-  VoiceId,
+  type VoiceId,
 } from '@aws-sdk/client-polly'
-import { Guild } from 'discord.js'
+import type { Guild } from 'discord.js'
 import type { Readable } from 'stream'
-import { AWS_REGION } from './environment.js'
-import { namespace } from './log.js'
+import { AWS_REGION } from './environment.ts'
+import { namespace } from './log.ts'
 
 const log = namespace('polly')
 

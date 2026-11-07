@@ -1,9 +1,9 @@
-import { Gender } from '@aws-sdk/client-polly'
+import type { Gender } from '@aws-sdk/client-polly'
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { REST } from '@discordjs/rest'
-import { APIApplicationCommandOptionChoice, Routes } from 'discord-api-types/v10'
-import { DISCORD_TOKEN } from './environment.js'
-import { listVoices } from './synthesize-speech.js'
+import { type APIApplicationCommandOptionChoice, Routes } from 'discord-api-types/v10'
+import { DISCORD_TOKEN } from './environment.ts'
+import { listVoices } from './synthesize-speech.ts'
 
 export const deployCommands = async () => {
   const voices = await listVoices()

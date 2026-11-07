@@ -1,6 +1,6 @@
 import type { AudioPlayer, VoiceConnection } from '@discordjs/voice'
 import { createAudioPlayer, NoSubscriberBehavior, VoiceConnectionStatus } from '@discordjs/voice'
-import { namespace } from '../log.js'
+import { namespace } from '../log.ts'
 
 const log = namespace('discord:audio-player')
 /*

@@ -1,11 +1,16 @@
-import { VoiceId } from '@aws-sdk/client-polly'
-import { Client, GatewayIntentBits, OAuth2Scopes, PermissionFlagsBits } from 'discord.js'
-import 'source-map-support/register.js'
-import { playInChannel } from './discord/play-in-channel.js'
-import { DISCORD_TOKEN, TTS_CHANNELS } from './environment.js'
-import { namespace } from './log.js'
-import { createSSML, synthesizeSpeech } from './synthesize-speech.js'
-import { getUserSettings, setUserSettings } from './user-settings.js'
+import type { VoiceId } from '@aws-sdk/client-polly'
+import {
+  Client,
+  GatewayIntentBits,
+  MessageFlags,
+  OAuth2Scopes,
+  PermissionFlagsBits,
+} from 'discord.js'
+import { playInChannel } from './discord/play-in-channel.ts'
+import { DISCORD_TOKEN, TTS_CHANNELS } from './environment.ts'
+import { namespace } from './log.ts'
+import { createSSML, synthesizeSpeech } from './synthesize-speech.ts'
+import { getUserSettings, setUserSettings } from './user-settings.ts'
 
 const log = namespace('discord')
 
@@ -18,7 +23,7 @@ const client = new Client({
   ],
 })
 
-client.on('ready', () => {
+client.on('clientReady', () => {
   const invite = client.generateInvite({
     scopes: [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands],
     permissions: [
@@ -61,7 +66,7 @@ client.on('interactionCreate', async (interaction) => {
   if (interaction.commandName === 'voice') {
     const voice = interaction.options.getString('name', true) as VoiceId
     await setUserSettings(interaction.user.id, 'voice', voice)
-    interaction.reply({ content: `${voice} online!`, ephemeral: true })
+    interaction.reply({ content: `${voice} online!`, flags: MessageFlags.Ephemeral })
   }
 })
 

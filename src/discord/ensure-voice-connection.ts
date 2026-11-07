@@ -6,7 +6,7 @@ import {
   VoiceConnectionStatus,
 } from '@discordjs/voice'
 import type { Guild } from 'discord.js'
-import { namespace } from '../log.js'
+import { namespace } from '../log.ts'
 
 const log = namespace('discord:voice-connection')
 
