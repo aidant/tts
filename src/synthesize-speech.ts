@@ -5,6 +5,8 @@ import {
   PollyClient,
   SynthesizeSpeechCommand,
   TextType,
+  type DescribeVoicesCommandOutput,
+  type Voice,
   type VoiceId,
 } from '@aws-sdk/client-polly'
 import type { Guild } from 'discord.js'
@@ -19,13 +21,25 @@ const client = new PollyClient({
 })
 
 export const listVoices = async () => {
-  const response = await client.send(
-    new DescribeVoicesCommand({
-      Engine: Engine.NEURAL,
-    })
-  )
+  const voices: Voice[][] = []
 
-  return response.Voices || []
+  let cursor: string | undefined = undefined;
+  do {
+    const response: DescribeVoicesCommandOutput = await client.send(
+      new DescribeVoicesCommand({
+        Engine: Engine.NEURAL,
+        NextToken: cursor,
+      })
+    )
+
+    if (response.Voices) {
+      voices.push(response.Voices)
+    }
+
+    cursor = response.NextToken
+  } while (cursor)
+
+  return voices.flat()
 }
 
 export const createSSML = async (

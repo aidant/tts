@@ -1,16 +1,10 @@
-import type { VoiceId } from '@aws-sdk/client-polly'
-import {
-  Client,
-  GatewayIntentBits,
-  MessageFlags,
-  OAuth2Scopes,
-  PermissionFlagsBits,
-} from 'discord.js'
+import { Client, GatewayIntentBits, OAuth2Scopes, PermissionFlagsBits } from 'discord.js'
+import { handleInteraction, initCommands } from './discord/commands/index.ts'
 import { playInChannel } from './discord/play-in-channel.ts'
 import { DISCORD_TOKEN, TTS_CHANNELS } from './environment.ts'
 import { namespace } from './log.ts'
 import { createSSML, synthesizeSpeech } from './synthesize-speech.ts'
-import { getUserSettings, setUserSettings } from './user-settings.ts'
+import { getUserSettings } from './user-settings.ts'
 
 const log = namespace('discord')
 
@@ -23,8 +17,8 @@ const client = new Client({
   ],
 })
 
-client.on('clientReady', () => {
-  const invite = client.generateInvite({
+client.once('clientReady', async (readyClient) => {
+  const invite = readyClient.generateInvite({
     scopes: [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands],
     permissions: [
       PermissionFlagsBits.Connect,
@@ -34,6 +28,13 @@ client.on('clientReady', () => {
   })
 
   log(invite)
+
+  try {
+    await initCommands(readyClient)
+    log('slash commands initialized')
+  } catch (error) {
+    console.error('Failed to initialize slash commands:', error)
+  }
 })
 
 client.on('messageCreate', async (message) => {
@@ -58,17 +59,7 @@ client.on('messageCreate', async (message) => {
   }
 })
 
-client.on('interactionCreate', async (interaction) => {
-  if (!interaction.isChatInputCommand()) return
-
-  log('slash command activated', interaction.commandName)
-
-  if (interaction.commandName === 'voice') {
-    const voice = interaction.options.getString('name', true) as VoiceId
-    await setUserSettings(interaction.user.id, 'voice', voice)
-    interaction.reply({ content: `${voice} online!`, flags: MessageFlags.Ephemeral })
-  }
-})
+client.on('interactionCreate', handleInteraction)
 
 client.login(DISCORD_TOKEN).catch((error) => {
   console.error(error)
