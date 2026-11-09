@@ -30,5 +30,5 @@ export const setUserSettings = async <K extends keyof Settings>(
   const settings = await getUserSettings(userId)
   settings[key] = value
   await fs.mkdir(path.dirname(getFilepath(userId)), { recursive: true })
-  await fs.writeFile(getFilepath(userId), JSON.stringify(settings), { encoding: 'utf8' })
+  await fs.writeFile(getFilepath(userId), JSON.stringify(settings), { encoding: 'utf-8' })
 }

@@ -3,7 +3,7 @@ import * as voice from './voice.ts'
 
 export const initCommands = async (client: Client<true>) => {
   await Promise.all([
-    client.application.commands.create(voice.voiceCommand.toJSON()),
+    client.application.commands.set([voice.voiceCommand.toJSON()]),
     voice.init(),
   ])
 }
