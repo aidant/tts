@@ -1,0 +1,3 @@
+allowBuilds:
+  '@discordjs/opus': true
+  ffmpeg-static: true

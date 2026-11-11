@@ -8,6 +8,7 @@
     "outDir": "lib",
     "rootDir": "src",
     "rewriteRelativeImportExtensions": true,
+    "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
     "target": "ES2021",

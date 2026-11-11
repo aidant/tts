@@ -1,0 +1,22 @@
+app = "d-a-v-e"
+primary_region = "syd"
+
+# [build]
+#   dockerfile = "Dockerfile"
+#
+# [deploy]
+#   strategy = "rolling"
+
+[mounts]
+  source = "tts_data"
+  destination = "/root/.tts"
+  initial_size = "1gb"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
+  cpus = 1
+  cpu_kind = "shared"
+
+[[restart]]
+  policy = "always"
